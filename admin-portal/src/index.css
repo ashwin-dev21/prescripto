@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+  font-family: Outfit;
+}
+
+
+/* Tailwind CSS v4 directive; ignored by standard CSS linters. */
+/* stylelint-disable at-rule-no-unknown */
+@theme {
+  --color-primary: #5f6fff;
+}
+/* stylelint-enable at-rule-no-unknown */
+
+::-webkit-scrollbar {
+  @apply hidden;
+}
