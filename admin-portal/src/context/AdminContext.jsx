@@ -48,20 +48,20 @@ export const AdminContextProvider = ({ children }) => {
     }
   };
 
-  const getAllAppointments = async () => {
-    try {
-      const { data } = await axios.get(backendUrl + "/api/admin/appointments", {
-        headers: { aToken },
-      });
+  // const getAllAppointments = async () => {
+  //   try {
+  //     const { data } = await axios.get(backendUrl + "/api/admin/appointments", {
+  //       headers: { aToken },
+  //     });
 
-      if (data.success) {
-        setAppointments(data.appointments);
-        // console.log(data.appointments);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
-    }
-  };
+  //     if (data.success) {
+  //       setAppointments(data.appointments);
+  //       // console.log(data.appointments);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || "An error occurred");
+  //   }
+  // };
 
   const cancelAppointment = async (appointmentId) => {
     try {
@@ -73,7 +73,7 @@ export const AdminContextProvider = ({ children }) => {
 
       if (data.success) {
         toast.success(data.message);
-        getAllAppointments();
+        // getAllAppointments();
         getDashData();
       }
     } catch (error) {
