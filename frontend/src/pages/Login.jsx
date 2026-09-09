@@ -1,10 +1,11 @@
 import { useState, useContext } from 'react'
 import axios from 'axios'
-import { AppContext } from '../context/AppContext' // Adjust import path to match your AppContext
+import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify' // Import toast
 
 const Login = () => {
-  const { backendUrl, token, setToken } = useContext(AppContext)
+  const { backendUrl, setToken } = useContext(AppContext)
   const navigate = useNavigate()
 
   const [state, setState] = useState('Sign Up')
@@ -18,25 +19,29 @@ const Login = () => {
     try {
       if (state === 'Sign Up') {
         const { data } = await axios.post(`${backendUrl}/api/user/register`, { name, email, password })
+        
         if (data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
+          toast.success("Account created successfully!")
           navigate('/')
         } else {
-          alert(data.message)
+          toast.error(data.message) // Show backend error message
         }
       } else {
         const { data } = await axios.post(`${backendUrl}/api/user/login`, { email, password })
+        
         if (data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
+          toast.success("Logged in successfully!")
           navigate('/')
         } else {
-          alert(data.message)
+          toast.error(data.message) // Show backend error message
         }
       }
     } catch (error) {
-      alert(error.message)
+      toast.error(error.message) // Show network/server error message
     }
   }
 
@@ -47,7 +52,7 @@ const Login = () => {
         <p>Please {state === 'Sign Up' ? "sign up" : "log in"} to Book Appointment</p>
         
         {state === "Sign Up" && (
-          <div className='w-full'>
+          <div className='w-full mt-2'>
             <p>Full Name</p>
             <input 
               className='border border-zinc-300 rounded w-full p-2 mt-1' 
@@ -59,7 +64,7 @@ const Login = () => {
           </div>
         )}
 
-        <div className='w-full'>
+        <div className='w-full mt-2'>
           <p>Email</p>
           <input 
             className='border border-zinc-300 rounded w-full p-2 mt-1' 
@@ -70,7 +75,7 @@ const Login = () => {
           />
         </div>
 
-        <div className='w-full'>
+        <div className='w-full mt-2'>
           <p>Password</p>
           <input 
             className='border border-zinc-300 rounded w-full p-2 mt-1' 
@@ -81,14 +86,14 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit" className='bg-primary text-white w-full py-1 mt-2 rounded-md text-base'>
+        <button type="submit" className='bg-primary text-white w-full py-2 mt-4 rounded-md text-base'>
           {state === 'Sign Up' ? "Create Account" : "Login"}
         </button>
         
         {state === "Sign Up" ? (
-          <p>Already have an account? <span onClick={() => setState('Login')} className='text-primary underline cursor-pointer'>Login here</span></p>
+          <p className='mt-2'>Already have an account? <span onClick={() => setState('Login')} className='text-primary underline cursor-pointer'>Login here</span></p>
         ) : (
-          <p>Create a New Account? <span onClick={() => setState('Sign Up')} className='text-primary underline cursor-pointer'>Click here</span></p>
+          <p className='mt-2'>Create a New Account? <span onClick={() => setState('Sign Up')} className='text-primary underline cursor-pointer'>Click here</span></p>
         )}
       </div>
     </form>
