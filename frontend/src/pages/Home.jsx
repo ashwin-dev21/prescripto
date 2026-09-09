@@ -1,7 +1,8 @@
 import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
-import Hero from '../components/Header'
-import Login from './Login' // Or redirect component
+import Header from '../components/Header'
+import SpecialityMenu from '../components/SpecialityMenu' // Fix the name here
+import Login from './Login'
 
 const Home = () => {
   const { token } = useContext(AppContext)
@@ -11,12 +12,7 @@ const Home = () => {
       {token ? (
         <>
           <Header />
-     <div>
-      <Header />
-      <SpecialityMenu />
-      <TopDoctors />
-      <Banner />
-    </div>
+          <SpecialityMenu />
         </>
       ) : (
         <Login />

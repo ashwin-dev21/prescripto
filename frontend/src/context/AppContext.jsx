@@ -4,14 +4,20 @@ import { doctors } from '../assets/assets'
 export const AppContext = createContext()
 
 const AppContextProvider = (props) => {
-
     const currencySymbol = '$'
-    
-    // Read Vite environment variable (or fallback to port 8000)
     const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
     
-    // Initialize token state from localStorage
-    const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false)
+    // Read stored token directly during initialization
+    const [token, setToken] = useState(localStorage.getItem('token') || false)
+
+    // Ensure localStorage stays updated when token changes
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem('token', token)
+        } else {
+            localStorage.removeItem('token')
+        }
+    }, [token])
 
     const value = {
         doctors,

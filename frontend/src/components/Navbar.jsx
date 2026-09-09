@@ -1,22 +1,27 @@
-import React from 'react'
-import {assets} from '../assets/assets'
+import React, { useContext, useState } from 'react'
+import { assets } from '../assets/assets'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-
-
+import { AppContext } from '../context/AppContext'
 
 const Navbar = () => {
-
    const navigate = useNavigate()
 
+   // Access global token and setToken from AppContext
+   const { token, setToken } = useContext(AppContext)
    const [showMenu, setShowMenu] = useState(false)
-   const [token, setToken] = useState(true)
+
+   const logout = () => {
+       setToken(false)
+       localStorage.removeItem('token')
+       navigate('/login')
+   }
 
   return (
     <div className='flex items-center justify-between py-4 mb-5 border-b border-b-gray-400'>
-       <img onClick={() => navigate('/')} className='w-32 cursor-pointer' src={assets.logo} alt="Logo"  />
+       <img onClick={() => navigate('/')} className='w-32 cursor-pointer' src={assets.logo} alt="Logo" />
+       
        <ul className='hidden md:flex items-center gap-4 text-sm font-medium cursor-pointer'>
-        <NavLink  to='/'>
+        <NavLink to='/'>
             <li className='py-1'>HOME</li>
             <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden'/>
         </NavLink> 
@@ -36,34 +41,37 @@ const Navbar = () => {
             <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden'/>
         </NavLink>
        </ul>
+
        <div className='flex items-center gap-4'>
         {
             token 
             ? <div className='flex items-center gap-2 cursor-pointer group relative'>
                 <img src={assets.profile_pic} alt="User" className='w-8 h-8 rounded-full' />
                 <img src={assets.dropdown_icon} alt="User" className='w-2.5 h-2.5 rounded-full' />
-                <div className='absolute top-0 right-0 pt-13 z-20 font-medium hidden group-hover:block'>
-                    <div className=' min-w-49 bg-stone-100 py-2 px-4 flex flex-col gap-2 '>
+                <div className='absolute top-0 right-0 pt-14 z-20 font-medium hidden group-hover:block'>
+                    <div className='min-w-48 bg-stone-100 py-2 px-4 flex flex-col gap-2 rounded shadow-md'>
                         <p onClick={() => navigate('/my-profile')} className='hover:bg-gray-200 p-2 cursor-pointer'>My Profile</p>
                         <p onClick={() => navigate('/my-appointments')} className='hover:bg-gray-200 p-2 cursor-pointer'>My Appointments</p>
-                        <p onClick={() => setToken(false)} className='hover:bg-gray-200 p-2 cursor-pointer'>Logout</p>
+                        <p onClick={logout} className='hover:bg-gray-200 p-2 cursor-pointer'>Logout</p>
                     </div>
                 </div>
             </div>
-            :<button onClick={() => navigate('/login')} className='bg-primary text-white py-2 px-4 rounded-full font-light '>Create Account</button>
+            : <button onClick={() => navigate('/login')} className='bg-primary text-white py-2 px-4 rounded-full font-light'>Create Account</button>
         }  
-        <img onClick={()=>setShowMenu(true)} className='w-6 md:hidden' src={assets.menu_icon} alt="" />
-        {/*--------Mobile Menu-------*/}
+        
+        <img onClick={() => setShowMenu(true)} className='w-6 md:hidden cursor-pointer' src={assets.menu_icon} alt="Menu" />
+        
+        {/* Mobile Menu */}
         <div className={`${showMenu ? 'fixed w-full h-full' : 'h-0 w-0'} md:hidden right-0 top-0 bottom-0 z-20 overflow-hidden bg-white transition-all`}>
             <div className='flex items-center justify-between px-5 py-6'>
-                <img className='w-36' src={assets.logo} alt="" />
-                <img className='w-7' onClick={()=>setShowMenu(false)} src={assets.cross_icon} alt="" />
+                <img className='w-36' src={assets.logo} alt="Logo" />
+                <img className='w-7 cursor-pointer' onClick={() => setShowMenu(false)} src={assets.cross_icon} alt="Close" />
             </div>
             <ul className='flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium'>
-                <NavLink className='px-4 py-2 rounded inline-block' onClick={()=>setShowMenu(false)} to='/'>Home</NavLink>
-                <NavLink className='px-4 py-2 rounded inline-block' onClick={()=>setShowMenu(false)} to='/doctors'>All Doctors</NavLink>
-                <NavLink className='px-4 py-2 rounded inline-block' onClick={()=>setShowMenu(false)} to='/about'>About</NavLink>
-                <NavLink className='px-4 py-2 rounded inline-block' onClick={()=>setShowMenu(false)} to='/contact'>Contact</NavLink>
+                <NavLink className='px-4 py-2 rounded inline-block' onClick={() => setShowMenu(false)} to='/'>Home</NavLink>
+                <NavLink className='px-4 py-2 rounded inline-block' onClick={() => setShowMenu(false)} to='/doctors'>All Doctors</NavLink>
+                <NavLink className='px-4 py-2 rounded inline-block' onClick={() => setShowMenu(false)} to='/about'>About</NavLink>
+                <NavLink className='px-4 py-2 rounded inline-block' onClick={() => setShowMenu(false)} to='/contact'>Contact</NavLink>
             </ul>
         </div>
        </div>
