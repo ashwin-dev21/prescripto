@@ -1,15 +1,29 @@
 import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { doctors as staticDoctors } from '../assets/assets' // Uses local doctors array with imported images
 
 export const AppContext = createContext()
 
 const AppContextProvider = (props) => {
+    const currencySymbol = '$'
     const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+
     const [token, setToken] = useState(localStorage.getItem('token') || false)
     const [userData, setUserData] = useState(false)
+    const [doctors, setDoctors] = useState([])
+    const [loading, setLoading] = useState(false)
 
-    // Fetch user profile from API
+    // Load static doctors directly from assets
+    const getDoctorsData = async () => {
+        // Formats doctors and ensures "available" field exists
+        const formattedDoctors = staticDoctors.map(doc => ({
+            ...doc,
+            available: true
+        }))
+        setDoctors(formattedDoctors)
+    }
+
     const loadUserProfileData = async () => {
         try {
             const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
@@ -26,6 +40,10 @@ const AppContextProvider = (props) => {
     }
 
     useEffect(() => {
+        getDoctorsData()
+    }, [])
+
+    useEffect(() => {
         if (token) {
             loadUserProfileData()
         } else {
@@ -35,11 +53,15 @@ const AppContextProvider = (props) => {
 
     const value = {
         backendUrl,
+        currencySymbol,
         token,
         setToken,
         userData,
         setUserData,
-        loadUserProfileData
+        loadUserProfileData,
+        doctors,
+        getDoctorsData,
+        loading
     }
 
     return (

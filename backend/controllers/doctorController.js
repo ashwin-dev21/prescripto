@@ -47,24 +47,36 @@ const appointmentsDoctor = async (req, res) => {
 }
 
 // API to cancel appointment for doctor panel
+// API to cancel appointment for doctor panel
 const appointmentCancel = async (req, res) => {
     try {
-
         const { docId, appointmentId } = req.body
 
         const appointmentData = await appointmentModel.findById(appointmentId)
+
         if (appointmentData && appointmentData.docId === docId) {
+            // 1. Mark appointment as cancelled
             await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+
+            // 2. Release slot in doctorModel so slot becomes available again
+            const { slotDate, slotTime } = appointmentData
+            const doctorData = await doctorModel.findById(docId)
+
+            if (doctorData && doctorData.slots_booked && doctorData.slots_booked[slotDate]) {
+                let slots_booked = doctorData.slots_booked
+                slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
+                await doctorModel.findByIdAndUpdate(docId, { slots_booked })
+            }
+
             return res.json({ success: true, message: 'Appointment Cancelled' })
         }
 
-        res.json({ success: false, message: 'Appointment Cancelled' })
+        res.json({ success: false, message: 'Cancellation Failed' })
 
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
     }
-
 }
 
 // API to mark appointment completed for doctor panel
