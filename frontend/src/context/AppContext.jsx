@@ -1,30 +1,45 @@
 import { createContext, useState, useEffect } from 'react'
-import { doctors } from '../assets/assets'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export const AppContext = createContext()
 
 const AppContextProvider = (props) => {
-    const currencySymbol = '$'
     const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
-    
-    // Read stored token directly during initialization
     const [token, setToken] = useState(localStorage.getItem('token') || false)
+    const [userData, setUserData] = useState(false)
 
-    // Ensure localStorage stays updated when token changes
+    // Fetch user profile from API
+    const loadUserProfileData = async () => {
+        try {
+            const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
+                headers: { token }
+            })
+            if (data.success) {
+                setUserData(data.userData)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
     useEffect(() => {
         if (token) {
-            localStorage.setItem('token', token)
+            loadUserProfileData()
         } else {
-            localStorage.removeItem('token')
+            setUserData(false)
         }
     }, [token])
 
     const value = {
-        doctors,
-        currencySymbol,
         backendUrl,
         token,
-        setToken
+        setToken,
+        userData,
+        setUserData,
+        loadUserProfileData
     }
 
     return (
