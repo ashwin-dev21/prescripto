@@ -44,20 +44,22 @@ const MyProfile = () => {
 
   return (
     <div className='max-w-lg flex flex-col gap-2 text-sm'>
+      {/* Profile Picture Upload & View */}
       {
         isEdit ? (
           <label htmlFor="image">
             <div className='inline-block relative cursor-pointer'>
-              <img className='w-36 rounded opacity-75' src={image ? URL.createObjectURL(image) : userData.image} alt="" />
-              {!image && <img className='w-10 absolute bottom-12 right-12' src={assets.upload_icon} alt="" />}
+              <img className='w-36 rounded opacity-75' src={image ? URL.createObjectURL(image) : userData.image} alt="Profile" />
+              {!image && <img className='w-10 absolute bottom-12 right-12' src={assets.upload_icon} alt="Upload" />}
             </div>
             <input onChange={(e) => setImage(e.target.files[0])} type="file" id="image" hidden />
           </label>
         ) : (
-          <img className='w-36 rounded' src={userData.image} alt="" />
+          <img className='w-36 rounded' src={userData.image} alt="Profile" />
         )
       }
 
+      {/* Name Input / View */}
       {
         isEdit
           ? <input className='bg-gray-50 text-3xl font-medium max-w-60 mt-4 border px-2 rounded' type="text" value={userData.name} onChange={e => setUserData(prev => ({ ...prev, name: e.target.value }))} />
@@ -66,6 +68,7 @@ const MyProfile = () => {
 
       <hr className='bg-zinc-400 h-px border-none' />
 
+      {/* Contact Information */}
       <div>
         <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
         <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
@@ -82,10 +85,10 @@ const MyProfile = () => {
           <p className='font-medium'>Address:</p>
           {
             isEdit
-              ? <p>
+              ? <div>
                   <input className='bg-gray-50 border rounded p-1 w-full mb-1' onChange={(e) => setUserData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} value={userData.address?.line1 || ''} type="text" />
                   <input className='bg-gray-50 border rounded p-1 w-full' onChange={(e) => setUserData(prev => ({ ...prev, address: { ...prev.address, line2: e.target.value } }))} value={userData.address?.line2 || ''} type="text" />
-                </p>
+                </div>
               : <p className='text-gray-500'>
                   {userData.address?.line1}
                   <br />
@@ -95,17 +98,23 @@ const MyProfile = () => {
         </div>
       </div>
 
+      {/* Basic Information */}
       <div>
         <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
         <div className='grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-neutral-700'>
           <p className='font-medium'>Gender:</p>
           {
             isEdit
-              ? <select className='max-w-28 bg-gray-100 border p-1 rounded' onChange={(e) => setUserData(prev => ({ ...prev, gender: e.target.value }))} value={userData.gender || 'Male'}>
+              ? <select 
+                  className='max-w-32 bg-gray-100 border p-1 rounded' 
+                  onChange={(e) => setUserData(prev => ({ ...prev, gender: e.target.value }))} 
+                  value={userData.gender || 'Not Selected'}
+                >
+                  <option value="Not Selected">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
-              : <p className='text-gray-400'>{userData.gender}</p>
+              : <p className='text-gray-400'>{userData.gender || 'Not Selected'}</p>
           }
 
           <p className='font-medium'>Birthday:</p>
@@ -117,6 +126,7 @@ const MyProfile = () => {
         </div>
       </div>
 
+      {/* Action Buttons */}
       <div className='mt-10'>
         {
           isEdit
