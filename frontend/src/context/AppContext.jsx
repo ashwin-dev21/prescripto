@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { doctors as staticDoctors } from '../assets/assets' // Uses local doctors array with imported images
 
 export const AppContext = createContext()
 
@@ -12,16 +11,20 @@ const AppContextProvider = (props) => {
     const [token, setToken] = useState(localStorage.getItem('token') || false)
     const [userData, setUserData] = useState(false)
     const [doctors, setDoctors] = useState([])
-    const [loading, setLoading] = useState(false)
 
-    // Load static doctors directly from assets
+    // Fetch doctors data from backend API
     const getDoctorsData = async () => {
-        // Formats doctors and ensures "available" field exists
-        const formattedDoctors = staticDoctors.map(doc => ({
-            ...doc,
-            available: true
-        }))
-        setDoctors(formattedDoctors)
+        try {
+            const { data } = await axios.get(`${backendUrl}/api/doctor/list`)
+            if (data.success) {
+                setDoctors(data.doctors)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
     }
 
     const loadUserProfileData = async () => {
@@ -35,6 +38,7 @@ const AppContextProvider = (props) => {
                 toast.error(data.message)
             }
         } catch (error) {
+            console.log(error)
             toast.error(error.message)
         }
     }
@@ -60,8 +64,7 @@ const AppContextProvider = (props) => {
         setUserData,
         loadUserProfileData,
         doctors,
-        getDoctorsData,
-        loading
+        getDoctorsData
     }
 
     return (
