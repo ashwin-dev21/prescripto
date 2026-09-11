@@ -6,8 +6,8 @@ import { AppContext } from '../context/AppContext'
 const Navbar = () => {
    const navigate = useNavigate()
 
-   // Access global token and setToken from AppContext
-   const { token, setToken } = useContext(AppContext)
+   // Access global state from AppContext including userData
+   const { token, setToken, userData } = useContext(AppContext)
    const [showMenu, setShowMenu] = useState(false)
 
    const logout = () => {
@@ -46,8 +46,11 @@ const Navbar = () => {
         {
             token 
             ? <div className='flex items-center gap-2 cursor-pointer group relative'>
-                <img src={assets.profile_pic} alt="User" className='w-8 h-8 rounded-full' />
-                <img src={assets.dropdown_icon} alt="User" className='w-2.5 h-2.5 rounded-full' />
+                {/* Circular Avatar displaying First Initial */}
+                <div className='w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm select-none'>
+                    {userData && userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <img src={assets.dropdown_icon} alt="Dropdown" className='w-2.5 h-2.5' />
                 <div className='absolute top-0 right-0 pt-14 z-20 font-medium hidden group-hover:block'>
                     <div className='min-w-48 bg-stone-100 py-2 px-4 flex flex-col gap-2 rounded shadow-md'>
                         <p onClick={() => navigate('/my-profile')} className='hover:bg-gray-200 p-2 cursor-pointer'>My Profile</p>
