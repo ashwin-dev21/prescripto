@@ -6,18 +6,15 @@ import { toast } from 'react-toastify'
 const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext)
 
-  // 1. Initialize state as an empty array [] to prevent undefined errors
   const [appointments, setAppointments] = useState([])
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-  // Safe Date Formatter with defensive checks
   const slotDateFormat = (slotDate) => {
     if (!slotDate || typeof slotDate !== 'string') return ''
     const dateArray = slotDate.split('_')
     return `${dateArray[0]} ${months[Number(dateArray[1])]} ${dateArray[2]}`
   }
 
-  // Fetch appointments from API
   const getUserAppointments = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/appointments`, {
@@ -34,7 +31,6 @@ const MyAppointments = () => {
     }
   }
 
-  // Cancel appointment API call
   const cancelAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(

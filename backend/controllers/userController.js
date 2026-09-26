@@ -138,26 +138,21 @@ const updateProfile = async (req, res) => {
 // API to book appointment 
 // API to book appointment 
 const bookAppointment = async (req, res) => {
-
     try {
         const { userId, docId, slotDate, slotTime } = req.body
-        const docData = await doctorModel.findById(docId).select("-password")
 
-        if (!docData) {
-            return res.json({ success: false, message: 'Doctor Not Found' })
-        }
+        const docData = await doctorModel.findById(docId).select('-password')
 
         if (!docData.available) {
-            return res.json({ success: false, message: 'Doctor Not Available' })
+            return res.json({ success: false, message: 'Doctor not available' })
         }
 
-        // Initialize slots_booked if it doesn't exist
-        let slots_booked = docData.slots_booked || {}
+        let slots_booked = docData.slots_booked
 
-        // checking for slot availability 
+        // Checking for slot availability 
         if (slots_booked[slotDate]) {
             if (slots_booked[slotDate].includes(slotTime)) {
-                return res.json({ success: false, message: 'Slot Not Available' })
+                return res.json({ success: false, message: 'Slot not available' })
             } else {
                 slots_booked[slotDate].push(slotTime)
             }
@@ -166,17 +161,15 @@ const bookAppointment = async (req, res) => {
             slots_booked[slotDate].push(slotTime)
         }
 
-        const userData = await userModel.findById(userId).select("-password")
+        const userData = await userModel.findById(userId).select('-password')
 
-        // Create a copy of docData to save in appointment without mutating docData
-        const docInfo = docData.toObject()
-        delete docInfo.slots_booked
+        delete docData.slots_booked
 
         const appointmentData = {
             userId,
             docId,
             userData,
-            docData: docInfo,
+            docData,
             amount: docData.fees,
             slotTime,
             slotDate,
@@ -186,8 +179,8 @@ const bookAppointment = async (req, res) => {
         const newAppointment = new appointmentModel(appointmentData)
         await newAppointment.save()
 
-        // Update doctor slots in database using markModified / direct object update
-        await doctorModel.findByIdAndUpdate(docId, { slots_booked }, { new: true })
+        // Save new slots data in doctor model
+        await doctorModel.findByIdAndUpdate(docId, { slots_booked })
 
         res.json({ success: true, message: 'Appointment Booked' })
 
