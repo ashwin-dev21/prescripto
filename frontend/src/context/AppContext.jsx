@@ -19,7 +19,7 @@ const AppContextProvider = (props) => {
         // Formats doctors and ensures "available" field exists
         const formattedDoctors = staticDoctors.map(doc => ({
             ...doc,
-            available: true
+            available: false // Default to false; can be updated based on actual availability logic 
         }))
         setDoctors(formattedDoctors)
     }
