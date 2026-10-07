@@ -5,7 +5,7 @@ const About = () => {
   return (
     <div>
       <div className='text-center text-2xl pt-10 text-gray-500'>
-        <p>About <span className='text-gray-700 font-medium'>US</span></p>
+        <p>About <span className='text-gray-800 font-medium'>US</span></p>
       </div>
 
       <div className='my-10 flex flex-col md:flex-row gap-12'>
@@ -18,7 +18,7 @@ const About = () => {
         </div>
       </div>
       <div className='text-xl my-4'>
-        <p>WHY  <span className='text-gray-700 font-semibold'>CHOOSE US</span></p>
+        <p>WHY  <span className='text-gray-800 font-semibold'>CHOOSE US</span></p>
       </div>
 
       <div className='flex flex-col md:flex-row mb-20'>
