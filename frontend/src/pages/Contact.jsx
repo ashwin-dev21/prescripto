@@ -13,7 +13,7 @@ const Contact = () => {
         <img className='w-full md:max-w-90' src={assets.contact_image} alt="" />
         <div className='flex flex-col justify-center items-start gap-6 '>
           <p className='font-semibold text-lg text-gray-600'>Our Office</p>
-          <p className='text-gray-500'>1234 Ashwin street <br /> bkt , Nepal
+          <p className='text-gray-500'>1111 Ashwin street <br /> bkt , Nepal
           </p>
           <p className='text-gray-500'>Tel: (111) 333-6764 <br /> Email : ashwin@gmail.com</p>
           <p className='font-semibold text-lg text-gray-600'>Careers at PRESCRIPTO</p>
