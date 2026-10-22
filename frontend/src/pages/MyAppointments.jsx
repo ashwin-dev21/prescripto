@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { doctors as staticDoctors } from '../assets/assets' // Local asset fallback
 
 const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext)
@@ -13,6 +14,16 @@ const MyAppointments = () => {
     if (!slotDate || typeof slotDate !== 'string') return ''
     const dateArray = slotDate.split('_')
     return `${dateArray[0]} ${months[Number(dateArray[1])]} ${dateArray[2]}`
+  }
+
+  // Helper function to resolve image src: checks item image, then falls back to local assets
+  const getDoctorImage = (docData) => {
+    if (!docData) return ''
+    // Search local static assets array by ID or matching Doctor Name
+    const matchedDoctor = staticDoctors.find(
+      (d) => d._id === docData._id || d.name === docData.name
+    )
+    return matchedDoctor ? matchedDoctor.image : docData.image
   }
 
   const getUserAppointments = async () => {
@@ -65,11 +76,15 @@ const MyAppointments = () => {
           appointments.map((item, index) => (
             <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b items-center' key={item._id || index}>
               <div>
-                {/* Added object-cover and height dimensions to format the image properly */}
                 <img 
-                  className='w-36 h-36 object-cover bg-indigo-50 rounded' 
-                  src={item.docData?.image} 
+                  className='w-32 h-32 object-cover bg-indigo-50 rounded' 
+                  src={getDoctorImage(item.docData)} 
                   alt={item.docData?.name || "Doctor"} 
+                  onError={(e) => {
+                    // Safety fallback if image URL fails to load
+                    const fallback = staticDoctors.find(d => d.name === item.docData?.name)
+                    if (fallback) e.target.src = fallback.image
+                  }}
                 />
               </div>
               <div className='flex-1 text-sm text-zinc-600'>
