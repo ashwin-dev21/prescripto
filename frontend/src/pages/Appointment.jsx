@@ -18,7 +18,9 @@ const Appointment = () => {
 
   const fetchDocInfo = async () => {
     const foundDoc = doctors.find((doc) => doc._id === docId)
-    setDocInfo(foundDoc)
+    if (foundDoc) {
+      setDocInfo(foundDoc)
+    }
   }
 
   // Generate available booking slots for the next 7 days
@@ -57,10 +59,10 @@ const Appointment = () => {
         let year = currentDate.getFullYear()
 
         const slotDate = `${day}_${month}_${year}`
-        const slotTime = formattedTime
+        const slotTimeStr = formattedTime
 
-        // Check if slot is already booked (if doctor object includes slots booked data)
-        const isSlotBooked = docInfo.slots_booked && docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(slotTime)
+        // Check if slot is already booked
+        const isSlotBooked = docInfo.slots_booked && docInfo.slots_booked[slotDate] && docInfo.slots_booked[slotDate].includes(slotTimeStr)
 
         if (!isSlotBooked) {
           timeSlots.push({
@@ -89,6 +91,7 @@ const Appointment = () => {
     }
 
     try {
+      // Get the exact date object from the selected day's slot list
       const date = docSlots[slotIndex]?.[0]?.datetime
 
       if (!date) {
@@ -100,7 +103,7 @@ const Appointment = () => {
       let month = date.getMonth() + 1
       let year = date.getFullYear()
 
-      // Format expected by standard backend controllers: "D_M_YYYY"
+      // Format expected by backend controller: "D_M_YYYY"
       let slotDate = `${day}_${month}_${year}`
 
       const { data } = await axios.post(
@@ -135,9 +138,9 @@ const Appointment = () => {
 
   return docInfo ? (
     <div>
-      {/* --- Example UI for Slots --- */}
+      {/* --- Slots UI --- */}
       <div className='flex gap-3 items-center w-full overflow-x-scroll my-4'>
-        {docSlots.length && docSlots.map((item, index) => (
+        {docSlots?.length > 0 && docSlots.map((item, index) => (
           <div 
             key={index} 
             onClick={() => setSlotIndex(index)} 
@@ -150,7 +153,7 @@ const Appointment = () => {
       </div>
 
       <div className='flex items-center gap-3 w-full overflow-x-scroll my-4'>
-        {docSlots.length && docSlots[slotIndex]?.map((item, index) => (
+        {docSlots?.length > 0 && docSlots[slotIndex]?.map((item, index) => (
           <p 
             key={index} 
             onClick={() => setSlotTime(item.time)} 
