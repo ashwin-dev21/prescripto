@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import 'dotenv/config'
 import doctorModel from './models/doctorModel.js'
+import appointmentModel from './models/appointmentModel.js'
 
 const connectDB = async () => {
     try {
@@ -15,7 +16,6 @@ const connectDB = async () => {
         process.exit(1)
     }
 }
-
 const doctorsData = [
     {
         _id: "doc1",
@@ -248,7 +248,8 @@ const seedDB = async () => {
     await connectDB()
     try {
         await doctorModel.deleteMany({})
-        console.log("Cleared old doctor records...")
+        await appointmentModel.deleteMany({}) // Clears stale broken appointment documents
+        console.log("Cleared old doctor and appointment records...")
 
         await doctorModel.insertMany(doctorsData)
         console.log("Database seeded successfully with all 15 doctors!")
