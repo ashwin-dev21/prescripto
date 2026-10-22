@@ -141,15 +141,22 @@ const bookAppointment = async (req, res) => {
     try {
         const { userId, docId, slotDate, slotTime } = req.body
 
+        // 1. Fetch doctor data
         const docData = await doctorModel.findById(docId).select('-password')
 
+        // ✅ Check if doctor exists in database first
+        if (!docData) {
+            return res.json({ success: false, message: 'Doctor not found in database' })
+        }
+
+        // 2. Check if doctor is available
         if (!docData.available) {
             return res.json({ success: false, message: 'Doctor not available' })
         }
 
-        let slots_booked = docData.slots_booked
+        let slots_booked = docData.slots_booked || {}
 
-        // Checking for slot availability 
+        // 3. Checking for slot availability 
         if (slots_booked[slotDate]) {
             if (slots_booked[slotDate].includes(slotTime)) {
                 return res.json({ success: false, message: 'Slot not available' })
@@ -161,15 +168,22 @@ const bookAppointment = async (req, res) => {
             slots_booked[slotDate].push(slotTime)
         }
 
+        // 4. Fetch user data
         const userData = await userModel.findById(userId).select('-password')
 
-        delete docData.slots_booked
+        if (!userData) {
+            return res.json({ success: false, message: 'User not found' })
+        }
+
+        // Create a copy of docData object before deleting slots_booked for appointment document
+        const docDataCopy = docData.toObject()
+        delete docDataCopy.slots_booked
 
         const appointmentData = {
             userId,
             docId,
             userData,
-            docData,
+            docData: docDataCopy,
             amount: docData.fees,
             slotTime,
             slotDate,
@@ -179,7 +193,7 @@ const bookAppointment = async (req, res) => {
         const newAppointment = new appointmentModel(appointmentData)
         await newAppointment.save()
 
-        // Save new slots data in doctor model
+        // 5. Save new slots data in doctor model
         await doctorModel.findByIdAndUpdate(docId, { slots_booked })
 
         res.json({ success: true, message: 'Appointment Booked' })
