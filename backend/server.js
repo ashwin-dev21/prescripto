@@ -6,8 +6,8 @@ import connectCloudinary from "./config/cloudinary.js"
 import userRouter from "./routes/userRoute.js"
 import doctorRouter from "./routes/doctorRoute.js"
 import adminRouter from "./routes/adminRoute.js"
-import doctorModel from "./models/doctorModel.js"
-import { doctors } from "./assets/assets.js" // Adjust path if your assets.js is located elsewhere in backend
+// import doctorModel from "./models/doctorModel.js"
+// import { doctors } from "./assets/assets.js" 
 
 // app config
 const app = express()
@@ -15,27 +15,27 @@ const port = process.env.PORT || 4000
 connectDB()
 connectCloudinary()
 
-// 🚀 AUTO-SEED FUNCTION: Inserts mock doctors into MongoDB if collection is empty
-const seedDatabase = async () => {
-    try {
-        const count = await doctorModel.countDocuments()
-        if (count === 0 && doctors && doctors.length > 0) {
-            console.log('Database is empty. Seeding mock doctors...')
-            // Remove string IDs (like "doc1") so MongoDB auto-generates 24-character ObjectIds
-            const formattedDoctors = doctors.map(doc => {
-                const { _id, ...rest } = doc
-                return rest
-            })
-            await doctorModel.insertMany(formattedDoctors)
-            console.log('Mock doctors seeded successfully!')
-        }
-    } catch (error) {
-        console.log('Error seeding database:', error.message)
-    }
-}
+// // 🚀 AUTO-SEED FUNCTION: Inserts mock doctors into MongoDB if collection is empty
+// const seedDatabase = async () => {
+//     try {
+//         const count = await doctorModel.countDocuments()
+//         if (count === 0 && doctors && doctors.length > 0) {
+//             console.log('Database is empty. Seeding mock doctors...')
+//             // Remove string IDs (like "doc1") so MongoDB auto-generates 24-character ObjectIds
+//             const formattedDoctors = doctors.map(doc => {
+//                 const { _id, ...rest } = doc
+//                 return rest
+//             })
+//             await doctorModel.insertMany(formattedDoctors)
+//             console.log('Mock doctors seeded successfully!')
+//         }
+//     } catch (error) {
+//         console.log('Error seeding database:', error.message)
+//     }
+// }
 
 // Run seed check after DB connection settles
-setTimeout(seedDatabase, 3000)
+// setTimeout(seedDatabase, 3000)
 
 // middlewares
 app.use(express.json())
