@@ -7,7 +7,7 @@ import userRouter from "./routes/userRoute.js"
 import doctorRouter from "./routes/doctorRoute.js"
 import adminRouter from "./routes/adminRoute.js"
 import doctorModel from "./models/doctorModel.js"
-import { doctors } from "./assets/assets.js" 
+// import { doctors } from "./assets/assets.js" 
 
 // app config
 const app = express()
