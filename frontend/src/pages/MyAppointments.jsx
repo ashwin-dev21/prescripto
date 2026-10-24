@@ -26,14 +26,16 @@ const MyAppointments = () => {
     return matchedDoctor ? matchedDoctor.image : docData.image
   }
 
-  const getUserAppointments = async () => {
+const getUserAppointments = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/appointments`, {
         headers: { token }
       })
 
       if (data.success) {
-        setAppointments(data.appointments.reverse())
+        // Filter out cancelled appointments so they don't appear in the list at all
+        const activeAppointments = data.appointments.filter(item => !item.cancelled)
+        setAppointments(activeAppointments.reverse())
       } else {
         toast.error(data.message)
       }
