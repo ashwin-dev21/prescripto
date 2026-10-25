@@ -15,21 +15,24 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState([])
   const [slotIndex, setSlotIndex] = useState(0)
   const [slotTime, setSlotTime] = useState('')
+  const [isBooking, setIsBooking] = useState(false)
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
   const fetchDocInfo = async () => {
-    const foundDoc = doctors.find((doc) => doc._id === docId)
-    if (foundDoc) {
-      setDocInfo(foundDoc)
+    if (doctors && doctors.length > 0) {
+      const foundDoc = doctors.find((doc) => doc._id === docId)
+      if (foundDoc) {
+        setDocInfo(foundDoc)
+      }
     }
   }
 
   const getAvailableSlots = async () => {
     if (!docInfo) return
     
-    setDocSlots([])
     let today = new Date()
+    let allSlots = []
 
     for (let i = 0; i < 7; i++) {
       let currentDate = new Date(today)
@@ -71,8 +74,10 @@ const Appointment = () => {
         currentDate.setMinutes(currentDate.getMinutes() + 30)
       }
 
-      setDocSlots(prev => [...prev, timeSlots])
+      allSlots.push(timeSlots)
     }
+
+    setDocSlots(allSlots)
   }
 
   const bookAppointment = async () => {
@@ -86,20 +91,22 @@ const Appointment = () => {
       return
     }
 
+    const date = docSlots[slotIndex]?.[0]?.datetime
+    if (!date) {
+      toast.error('Invalid slot selection')
+      return
+    }
+
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+    let slotDate = `${day}_${month}_${year}`
+
+    setIsBooking(true)
+    toast.info('Booking your appointment...')
+    navigate('/my-appointments')
+
     try {
-      const date = docSlots[slotIndex]?.[0]?.datetime
-
-      if (!date) {
-        toast.error('Invalid slot selection')
-        return
-      }
-
-      let day = date.getDate()
-      let month = date.getMonth() + 1
-      let year = date.getFullYear()
-
-      let slotDate = `${day}_${month}_${year}`
-
       const { data } = await axios.post(
         `${backendUrl}/api/user/book-appointment`, 
         { docId, slotDate, slotTime }, 
@@ -107,16 +114,20 @@ const Appointment = () => {
       )
 
       if (data.success) {
-        toast.success(data.message)
-        getDoctorsData()
-        navigate('/my-appointments')
+        toast.dismiss()
+        toast.success(data.message || 'Appointment booked successfully!')
+        if (getDoctorsData) getDoctorsData()
       } else {
+        toast.dismiss()
         toast.error(data.message)
       }
 
     } catch (error) {
       console.log(error)
+      toast.dismiss()
       toast.error(error.message || 'Something went wrong')
+    } finally {
+      setIsBooking(false)
     }
   }
 
@@ -188,15 +199,23 @@ const Appointment = () => {
           ))}
         </div>
 
-        <button onClick={bookAppointment} className='bg-primary text-white text-sm cursor-pointer font-light px-14 py-3 rounded-full my-6'>
-          Book an appointment
+        <button 
+          disabled={isBooking}
+          onClick={bookAppointment} 
+          className='bg-primary text-white text-sm cursor-pointer font-light px-14 py-3 rounded-full my-6 disabled:opacity-50'
+        >
+          {isBooking ? 'Booking...' : 'Book an appointment'}
         </button>
       </div>
 
       {/* Listing Related Doctors */}
       <RelatedDoctors docId={docId} speciality={docInfo?.speciality} />
     </div>
-  ) : null
+  ) : (
+    <div className='flex justify-center items-center h-96'>
+      <p className='text-gray-400 text-sm'>Loading doctor information...</p>
+    </div>
+  )
 }
 
 export default Appointment
