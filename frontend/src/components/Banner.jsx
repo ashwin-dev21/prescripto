@@ -10,7 +10,7 @@ const Banner = () => {
       <div className='flex-1 py-8 sm:py-10 md:py-16 lg:py-24 lg:p1-5'>
         <div className='text-xl sm:text-2xl md:text-3xl lg:text-5xl font-semibold text-white'>
           <p>Book Appoitment</p>
-          <p className='mt-4'>With 100+ Expert Doctors</p>
+          <p className='mt-4'>With 100+ Experienced Doctors</p>
         </div>
         <button onClick={() => {navigate('/login'); scrollTo(0,0)}} className='bg-white text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 px-8 py-3 rounded-full mt-10 cursor-pointer hover:scale-105 transition-all duration-300'>
           Create Account
