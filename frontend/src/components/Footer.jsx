@@ -35,7 +35,7 @@ const Footer = () => {
           <p className='text-xl font-medium mb-5'>CONTACT US</p>
 
           <ul className='flex flex-col gap-2 text-gray-600'>
-            <li>Email: Ashwin@company.com</li>
+            <li>Email: Ashwin@Khadka.com</li>
             <li>Phone: +1 234 567 890</li>
           </ul>
         </div>
