@@ -8,7 +8,7 @@ const TopDoctors = () => {
 
     return (
         <div className='flex flex-col items-center gap-5 my-16 text-gray-900 md:mx-10'>
-            <h1 className='text-3xl font-semibold'>Top Doctors To Book</h1>
+            <h1 className='text-3xl font-semibold'>Top  Experienced Doctors To Book</h1>
             <p className='text-center sm:w-1/3 text-sm'>
                 Simply browse through our directory of experienced professionals.
             </p>
