@@ -14,7 +14,7 @@ const Footer = () => {
 
           <p className='text-gray-600 leading-6'>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Accusamus, consequatur.
+            Accusamus,consequatur.
           </p>
         </div>
 
