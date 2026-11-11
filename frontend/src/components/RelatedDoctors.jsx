@@ -32,7 +32,7 @@ export const RelatedDoctors = ({ speciality, docId }) => {
                 navigate(`/appointment/${item._id}`)
                 window.scrollTo(0, 0)
               }}
-              className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-2.5 transition-all duration-300'
+              className='border border-blue-300 rounded-xl overflow-hidden cursor-pointer hover:translate-y-2.5 transition-all duration-300'
             >
               <img className='bg-blue-50 w-full' src={item.image} alt={item.name || 'Doctor'} />
               <div className='p-4'>
