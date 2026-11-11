@@ -41,7 +41,7 @@ export const RelatedDoctors = ({ speciality, docId }) => {
                   <p>{item?.available ? 'Available' : 'Not Available'}</p>
                 </div>
                 <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
-                <p className='text-gray-600 text-sm'>{item.speciality}</p>
+                <p className='text-gray-700 text-sm'>{item.speciality}</p>
               </div>
             </div>
           ) : null
